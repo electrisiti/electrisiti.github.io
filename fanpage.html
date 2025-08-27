@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Justin Bieber Fan Page</title>
+  <!--
+    Beginner-friendly, single-file website.
+    - No frameworks, only HTML, CSS, and JavaScript.
+    - Lots of comments to explain what's going on.
+  -->
+  <style>
+    /* ----------------------
+       Basic Reset & Variables
+       ---------------------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      --bg: #0f172a;          /* slate-900 */
+      --panel: #111827;       /* gray-900 */
+      --text: #e5e7eb;        /* gray-200 */
+      --muted: #9ca3af;       /* gray-400 */
+      --accent: #60a5fa;      /* blue-400 */
+      --accent-2: #a78bfa;    /* violet-400 */
+      --success: #34d399;     /* emerald-400 */
+      --warning: #f59e0b;     /* amber-500 */
+      --danger: #f87171;      /* red-400 */
+    }
+
+    /* Light mode values (will be toggled via JS by adding .light to <html>) */
+    html.light {
+      --bg: #f8fafc;          /* slate-50 */
+      --panel: #ffffff;       /* white */
+      --text: #0f172a;        /* slate-900 */
+      --muted: #475569;       /* slate-600 */
+      --accent: #2563eb;      /* blue-600 */
+      --accent-2: #7c3aed;    /* violet-700 */
+      --success: #059669;     /* emerald-600 */
+      --warning: #b45309;     /* amber-700 */
+      --danger: #dc2626;      /* red-600 */
+    }
+
+    /* ----------------------
+       Page Layout & Typo
+       ---------------------- */
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container {
+      width: min(1100px, 92%);
+      margin-inline: auto;
+    }
+
+    /* ----------------------
+       Header / Nav
+       ---------------------- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      background: linear-gradient(90deg, rgba(96,165,250,0.12), rgba(167,139,250,0.12));
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .brand .logo {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--accent), var(--accent-2));
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.15);
+    }
+
+    .nav a { margin-inline: 0.6rem; font-weight: 600; }
+
+    .controls { display: flex; align-items: center; gap: 0.5rem; }
+
+    .btn {
+      border: 1px solid rgba(255,255,255,0.2);
+      background: var(--panel);
+      color: var(--text);
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .btn:hover { filter: brightness(1.1); }
+
+    /* ----------------------
+       Hero Section
+       ---------------------- */
+    .hero {
+      background:
+        radial-gradient(1200px 500px at 20% 0%, rgba(96,165,250,0.1), transparent),
+        radial-gradient(1200px 600px at 80% 10%, rgba(167,139,250,0.12), transparent),
+        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+      padding: 4rem 0 2.5rem;
+      text-align: center;
+    }
+
+    .hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin: 0 0 0.5rem; }
+    .hero p { color: var(--muted); margin: 0.2rem 0 1.2rem; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+    .stat {
+      background: var(--panel);
+      padding: 0.9rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .stat .number { font-size: 1.2rem; font-weight: 800; }
+    .stat .label { color: var(--muted); font-size: 0.9rem; }
+
+    /* ----------------------
+       Sections
+       ---------------------- */
+    section { padding: 2.2rem 0; }
+    section h2 { margin: 0 0 0.7rem; font-size: 1.6rem; }
+    .panel {
+      background: var(--panel);
+      padding: 1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* About */
+    .about p { margin: 0.2rem 0; }
+
+    /* Top Songs */
+    .songs {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 1rem;
+    }
+    .song-list { display: grid; gap: 0.5rem; }
+
+    .song-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.6rem 0.75rem; border-radius: 12px; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+    }
+    .song-item:hover { background: rgba(255,255,255,0.06); }
+    .song-title { font-weight: 600; }
+    .song-meta { color: var(--muted); font-size: 0.9rem; }
+
+    .player { aspect-ratio: 16 / 9; width: 100%; border: 0; border-radius: 12px; }
+
+    /* Gallery */
+    .gallery {
+      display: grid; gap: 0.6rem; grid-template-columns: repeat(3, 1fr);
+    }
+    .gallery img { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; }
+
+    /* Shoutbox */
+    .shoutbox form { display: grid; gap: 0.6rem; }
+    .input, textarea {
+      width: 100%; padding: 0.6rem 0.8rem; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.04);
+      color: var(--text);
+    }
+    .shouts { margin-top: 0.8rem; display: grid; gap: 0.6rem; }
+    .shout { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 0.6rem 0.8rem; border-radius: 12px; }
+    .shout .name { font-weight: 700; }
+    .shout .time { color: var(--muted); font-size: 0.85rem; }
+
+    /* Footer */
+    footer { text-align: center; color: var(--muted); padding: 2rem 0 3rem; }
+
+    /* Responsive tweaks */
+    @media (max-width: 800px) {
+      .songs { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .gallery { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 520px) {
+      .stats { grid-template-columns: 1fr; }
+      .gallery { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <span>Belieber Hub</span>
+      </div>
+      <nav aria-label="Main Navigation">
+        <a href="#about">About</a>
+        <a href="#songs">Top Songs</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#shoutbox">Shoutbox</a>
+      </nav>
+      <div class="controls">
+        <button id="likeBtn" class="btn" title="Like this page">❤️ <span id="likeCount">0</span></button>
+        <button id="themeBtn" class="btn" title="Toggle theme">🌓 Theme</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Justin Bieber Fan Page</h1>
+      <p>News, favorite tracks, and a cozy corner for Beliebers 💜</p>
+      <div class="stats">
+        <div class="stat">
+          <div class="number" id="yearCounter">2009 → Now</div>
+          <div class="label">Years of music</div>
+        </div>
+        <div class="stat">
+          <div class="number" id="likesStat">0</div>
+          <div class="label">Page likes</div>
+        </div>
+        <div class="stat">
+          <div class="number">#Belieber</div>
+          <div class="label">Join the community</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about">
+    <div class="container">
+      <h2>About Justin</h2>
+      <div class="panel">
+        <p>Justin Bieber is a Canadian singer and songwriter who rose to fame as a teenager. Over the years, he has released chart-topping albums and hit singles across pop, R&B, and EDM.</p>
+        <p>This is a simple fan-made page built with vanilla HTML, CSS, and JavaScript—perfect for beginners to study and remix. ✨</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Top Songs Section -->
+  <section id="songs">
+    <div class="container">
+      <h2>Top Songs (Click to Play)</h2>
+      <div class="songs">
+        <!-- Song List -->
+        <div class="panel">
+          <div class="song-list" id="songList" aria-live="polite"></div>
+        </div>
+        <!-- Player -->
+        <div class="panel">
+          <iframe id="player" class="player" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen title="YouTube video player"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section id="gallery">
+    <div class="container">
+      <h2>Gallery</h2>
+      <div class="panel">
+        <!-- Using placeholder images to keep it simple & copyright-safe.
+             Replace any src with real images if you want. -->
+        <div class="gallery">
+          <img src="JB_image/justin1.jpg" alt="Stage lights and crowd" />
+          <img src="JB_image/justin2.webp" alt="Stage lights and crowd" />
+          <img src="JB_image/justin3.jpg" alt="Stage lights and crowd" />
+          <img src="JB_image/justin4.jpg" alt="Stage lights and crowd" />
+          <img src="JB_image/justin5.jpg" alt="Stage lights and crowd" />
+          <img src="JB_image/justin6.jpg" alt="Stage lights and crowd" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shoutbox Section (localStorage) -->
+  <section id="shoutbox" class="shoutbox">
+    <div class="container">
+      <h2>Shoutbox</h2>
+      <div class="panel">
+        <form id="shoutForm">
+          <input class="input" id="name" placeholder="Your name" required />
+          <textarea id="message" rows="3" placeholder="Say something nice ✨" required></textarea>
+          <button class="btn" type="submit">Post</button>
+        </form>
+        <div class="shouts" id="shouts"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>Fan page for learning purposes. Not affiliated with Justin Bieber or his label.</p>
+    </div>
+  </footer>
+
+  <script>
+    // =============================
+    // Small helper: format time
+    // =============================
+    function formatDate(d) {
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mm = String(d.getMinutes()).padStart(2, '0');
+      return `${y}-${m}-${day} ${hh}:${mm}`;
+    }
+
+    // =============================
+    // Theme toggle (saved in localStorage)
+    // =============================
+    const themeBtn = document.getElementById('themeBtn');
+    const THEME_KEY = 'jb_theme';
+    function setTheme(mode) {
+      document.documentElement.classList.toggle('light', mode === 'light');
+      localStorage.setItem(THEME_KEY, mode);
+    }
+    (function initTheme() {
+      const saved = localStorage.getItem(THEME_KEY) || 'dark';
+      setTheme(saved);
+    })();
+    themeBtn.addEventListener('click', () => {
+      const now = document.documentElement.classList.contains('light') ? 'dark' : 'light';
+      setTheme(now);
+    });
+
+    // =============================
+    // Like button (saved in localStorage)
+    // =============================
+    const LIKE_KEY = 'jb_likes';
+    const likeBtn = document.getElementById('likeBtn');
+    const likeCount = document.getElementById('likeCount');
+    const likesStat = document.getElementById('likesStat');
+    function updateLikesDisplay(n) {
+      likeCount.textContent = n;
+      likesStat.textContent = n;
+    }
+    const initialLikes = Number(localStorage.getItem(LIKE_KEY)) || 0;
+    updateLikesDisplay(initialLikes);
+    likeBtn.addEventListener('click', () => {
+      let n = Number(localStorage.getItem(LIKE_KEY)) || 0;
+      n += 1;
+      localStorage.setItem(LIKE_KEY, String(n));
+      updateLikesDisplay(n);
+      likeBtn.classList.add('pulse');
+      setTimeout(() => likeBtn.classList.remove('pulse'), 250);
+    });
+
+    // =============================
+    // Songs & YouTube player
+    // Replace/add your favorites by editing the array below.
+    // =============================
+    const songs = [
+      { title: 'Peaches (feat. Daniel Caesar & Giveon)', year: 2021, id: 'tQ0yjYUFKAE' },
+      { title: 'Sorry', year: 2015, id: 'fRh_vgS2dFE' },
+      { title: 'Love Yourself', year: 2015, id: 'oyEuk8j8imI' },
+      { title: 'What Do You Mean?', year: 2015, id: 'DK_0jXPuIr0' },
+      { title: 'Baby (feat. Ludacris)', year: 2010, id: 'kffacxfA7G4' },
+      { title: 'Ghost', year: 2021, id: 'Fp8msa5uYsc' },
+    ];
+
+    const songList = document.getElementById('songList');
+    const player = document.getElementById('player');
+
+    function renderSongs() {
+      songList.innerHTML = '';
+      songs.forEach((s, i) => {
+        const item = document.createElement('button');
+        item.className = 'song-item';
+        item.innerHTML = `
+          <span class="song-title">${i + 1}. ${s.title}</span>
+          <span class="song-meta">${s.year}</span>
+        `;
+        item.addEventListener('click', () => playSong(s.id));
+        songList.appendChild(item);
+      });
+    }
+
+    function playSong(videoId) {
+      // The autoplay=1 query param starts the video automatically
+      player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+    }
+
+    renderSongs();
+    // Load the first song by default
+    playSong(songs[0].id);
+
+    // =============================
+    // Simple shoutbox using localStorage
+    // =============================
+    const SHOUTS_KEY = 'jb_shouts_v1';
+    const shoutForm = document.getElementById('shoutForm');
+    const shoutsEl = document.getElementById('shouts');
+
+    function loadShouts() {
+      try {
+        const data = JSON.parse(localStorage.getItem(SHOUTS_KEY) || '[]');
+        return Array.isArray(data) ? data : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveShouts(list) {
+      localStorage.setItem(SHOUTS_KEY, JSON.stringify(list));
+    }
+
+    function renderShouts() {
+      const list = loadShouts();
+      shoutsEl.innerHTML = '';
+      list.slice().reverse().forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'shout';
+        div.innerHTML = `
+          <div class="name">${item.name}</div>
+          <div class="time">${item.time}</div>
+          <div class="msg">${item.msg}</div>
+        `;
+        shoutsEl.appendChild(div);
+      });
+    }
+
+    shoutForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim() || 'Belieber';
+      const msg = document.getElementById('message').value.trim();
+      if (!msg) return;
+      const list = loadShouts();
+      list.push({ name, msg, time: formatDate(new Date()) });
+      saveShouts(list);
+      shoutForm.reset();
+      renderShouts();
+    });
+
+    renderShouts();
+
+    // (Optional) fun stat: compute years since 2009
+    const yearCounter = document.getElementById('yearCounter');
+    const startYear = 2009; // One Time release year
+    const nowYear = new Date().getFullYear();
+    yearCounter.textContent = `${startYear} → ${nowYear}`;
+  </script>
+</body>
+</html>
